@@ -156,9 +156,7 @@ def search_windows(img, windows, clf, scaler, color_space='RGB', scale = 1.0,
     on_windows = []
     #2) Iterate over all windows in the list
     for window in windows:
-        print("window",window)
         #3) Extract the test window from original image
-        print("scale:",int(64*scale))
         test_img = cv2.resize(img[window[0][1]:window[1][1], window[0][0]:window[1][0]], (64,64))      
         #4) Extract features for that window using single_img_features()
 

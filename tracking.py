@@ -38,12 +38,6 @@ draw_image = np.copy(image)
 ystart = 400
 ystop = 656
 
-scales_d = {
-    0.90:[400,656,0,1280],
-    1.5:[400,656,0,1280],
-    2.0:[400,656,0,1280],
-}
-
 scales = [0.9,1.5,2.0 ]
 
 hot_images = []
@@ -72,7 +66,6 @@ fig = plt.figure()
 counter = 1
 counter1 = 1
 for scale in scales:
-    print("what is counter:",counter)
     plt.subplot("32"+str(counter))
     plt.imshow( all_images[counter1-1])
     plt.title('All windows (overlap 0.5) Scale: '+str(scale))
@@ -84,87 +77,94 @@ for scale in scales:
 
     counter +=1
     counter1 +=1
-
-    
+  
 plt.show()
-#plt.savefig("./myimages/hotwindows.jpg")
+plt.savefig("./myimages/hotwindows.jpg")
 
 
-#scale_dic = {}
+scale_dic = {}
 
-##image = mpimg.imread('testvideos/output_images/frame203.jpg')
+#image = mpimg.imread('testvideos/output_images/frame203.jpg')
 #image = mpimg.imread('testvideos/output_images/frame190.jpg')
-##image = mpimg.imread('testvideos/output_images/frame220.jpg')
-#
-##image = image.astype(np.float32)/255
-#
-##image = mpimg.imread('test_images/test7.jpg')
-#draw_image = np.copy(image)
-#
-#out_img_d = {}
-#bbox_list_d = {}
-#for scale,coords in scales_d.items():  
-#    out_img_d[scale], bbox_list_d[scale] = find_cars(image, coords[0], coords[1], coords[2], coords[3], scale, svc, X_scaler, orient, pix_per_cell, cell_per_block, spatial_size, hist_bins)
-#
-#def add_heat(heatmap, bbox_list):
-#    # Iterate through list of bboxes
-#    for box in bbox_list:
-#        # Add += 1 for all pixels inside each bbox
-#        # Assuming each "box" takes the form ((x1, y1), (x2, y2))
-#        # Assuming each "box" takes the form [x1, y1, x2, y2]
-#        heatmap[box[0][1]:box[1][1], box[0][0]:box[1][0]] += 1
-#        #heatmap[box[0]:box[1], box[2]:box[3]] += 1
-#    # Return updated heatmap
-#    return heatmap
-#
-#def apply_threshold(heatmap, threshold):
-#    # Zero out pixels below the threshold
-#    heatmap[heatmap <= threshold] = 0
-#    # Return thresholded map
-#    return heatmap
-#
-#from scipy.ndimage.measurements import label
-#
-#def draw_labeled_bboxes(img, labels):
-#    # Iterate through all detected cars
-#
-#    for car_number in range(1, labels[1]+1):
-#        # Find pixels with each car_number label value
-#        nonzero = (labels[0] == car_number).nonzero()
-#        # Identify x and y values of those pixels
-#        nonzeroy = np.array(nonzero[0])
-#        nonzerox = np.array(nonzero[1])
-#        # Define a bounding box based on min/max x and y                  
-#        bbox = ((np.min(nonzerox),np.min(nonzeroy)),(np.max(nonzerox), np.max(nonzeroy) ))
-#        # Draw the box on the image
-#        cv2.rectangle(img, bbox[0], bbox[1], (0,0,255), 6)
-#    # Return the image
-#    return img
-#
-#coord_li = []
-#for key,box_li in bbox_list_d.items():
-#    for box in box_li:
-#        coord_li.append( ( ( box[0],box[1] ), ( box[2], box[3] ) ) ) 
-#    
-#window_img = draw_boxes(draw_image, coord_li, color=(0, 0, 255), thick=6)                    
+#image = mpimg.imread('testvideos/output_images/frame220.jpg')
+
+#image = image.astype(np.float32)/255
+
+image = mpimg.imread('test_images/test1.jpg')
+draw_image = np.copy(image)
+
+scales_d = {
+    0.90:[400,656,0,1280],
+    1.5:[400,656,0,1280],
+    2.0:[400,656,0,1280],
+}
+
+out_img_d = {}
+bbox_list_d = {}
+for scale,coords in scales_d.items():  
+    out_img_d[scale], bbox_list_d[scale] = find_cars(image, coords[0], coords[1], scale, svc, X_scaler, orient, pix_per_cell, cell_per_block, spatial_size, hist_bins)
+
+def add_heat(heatmap, bbox_list):
+    # Iterate through list of bboxes
+    for box in bbox_list:
+        # Add += 1 for all pixels inside each bbox
+        # Assuming each "box" takes the form ((x1, y1), (x2, y2))
+        heatmap[box[0][1]:box[1][1], box[0][0]:box[1][0]] += 1
+    # Return updated heatmap
+    return heatmap
+
+def apply_threshold(heatmap, threshold):
+    # Zero out pixels below the threshold
+    heatmap[heatmap <= threshold] = 0
+    # Return thresholded map
+    return heatmap
+
+from scipy.ndimage.measurements import label
+
+def draw_labeled_bboxes(img, labels):
+    # Iterate through all detected cars
+
+    for car_number in range(1, labels[1]+1):
+        # Find pixels with each car_number label value
+        nonzero = (labels[0] == car_number).nonzero()
+        # Identify x and y values of those pixels
+        nonzeroy = np.array(nonzero[0])
+        nonzerox = np.array(nonzero[1])
+        # Define a bounding box based on min/max x and y                  
+        bbox = ((np.min(nonzerox),np.min(nonzeroy)),(np.max(nonzerox), np.max(nonzeroy) ))
+        # Draw the box on the image
+        cv2.rectangle(img, bbox[0], bbox[1], (0,0,255), 6)
+    # Return the image
+    return img
+
+coord_li = []
+for key,box_li in bbox_list_d.items():
+    for box in box_li:
+        coord_li.append( ( ( box[0],box[1] ), ( box[2], box[3] ) ) ) 
+    
+window_img = draw_boxes(draw_image, coord_li, color=(0, 0, 255), thick=6)                    
 #plt.imshow(window_img)
 #plt.show()
-#
-#heat_image = np.zeros_like(image[:,:,0]).astype(np.float)
-#heat = add_heat(heat_image, coord_li)
-#heat = apply_threshold(heat,1)
-#heatmap = np.clip(heat, 0, 255)
-#
-#### Find final boxes from heatmap using label function
-#labels = label(heatmap)
-#draw_img = draw_labeled_bboxes(np.copy(image), labels)
-#
-#fig = plt.figure()
-#plt.subplot(121)
-#plt.imshow(draw_img)
-#plt.title('Car Positions')
-#plt.subplot(122)
-#plt.imshow(heatmap, cmap='hot')
-#plt.title('Heat Map')
-#fig.tight_layout()
-#plt.show()
+
+heat_image = np.zeros_like(image[:,:,0]).astype(np.float)
+heat = add_heat(heat_image, coord_li)
+heat = apply_threshold(heat,1)
+heatmap = np.clip(heat, 0, 255)
+
+### Find final boxes from heatmap using label function
+labels = label(heatmap)
+draw_img = draw_labeled_bboxes(np.copy(image), labels)
+
+fig = plt.figure()
+plt.subplot(221)
+plt.imshow(window_img)
+plt.title('All hot windows')
+plt.subplot(222)
+plt.imshow(heatmap, cmap='hot')
+plt.title('Heatmap')
+plt.subplot(223)
+plt.imshow(draw_img)
+plt.title('Labeled Bounding boxes')
+fig.tight_layout()
+#plt.savefig("./myimages/hotwindows_heatmap.jpg")
+plt.show()
