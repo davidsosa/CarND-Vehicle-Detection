@@ -21,9 +21,7 @@ The goals / steps of this project are the following:
 [//]: # (Image References)
 [image1]: ./myimages/car_notcar.jpg
 [image2]: ./myimages/hogexample.jpg
-[image3]: ./examples/sliding_windows.jpg
-[image4]: ./examples/sliding_window.jpg
-[image5]: ./examples/bboxes_and_heat.png
+[image3]: ./myimages/hotwindows.jpg
 [image6]: ./examples/labels_map.png
 [image7]: ./examples/output_bboxes.png
 [video1]: ./project_video.mp4
@@ -48,35 +46,29 @@ I started by reading in all the `vehicle` and `non-vehicle` images.  Here is an 
 
 ![alt text][image1]
 
-I then explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  I grabbed random images from each of the two classes and displayed them to get a feel for what the `skimage.hog()` output looks like.
-
-Here is an example using the `YCrCb` color space and HOG parameters of `orientations=8`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
-
+I then explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  I grabbed random images from each of the two classes and displayed them to get a feel for what the `skimage.hog()` output looks like. An example using the `YCrCb` color space and HOG parameters of `orientations=9`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)` is shown:
 
 ![alt text][image2]
 
 #### 2. Explain how you settled on your final choice of HOG parameters.
-
-I tried various combinations of parameters and...
+The final choice of parameters was the default.
 
 #### 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
-I trained a linear SVM using...
+I trained a linear SVM using 7000 images (due to memory issues) with GTI vehicle image database. This can be seen in the script `trainer.py`. The SVN was trained both with the color histogram features in the `YCrCb` and the the HOG features in ALL the channels of the `YCrCb` color space.
 
 ### Sliding Window Search
 
 #### 1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
-I decided to search random window positions at random scales all over the image and came up with this (ok just kidding I didn't actually ;):
+I decided to search random window positions at 1. all over the image and came up with this (ok just kidding I didn't actually ;):
 
 ![alt text][image3]
 
+
 ####2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
-Ultimately I searched on two scales using YCrCb 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are some example images:
-
-![alt text][image4]
----
+The images can be seen above. The most relevant change I was training with the `YCrCb` color space instead of th `RGB` color space. This made the boxes much more stable around the cars and practically eliminated the false positives. 
 
 ### Video Implementation
 
