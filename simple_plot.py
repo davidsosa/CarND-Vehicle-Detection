@@ -156,27 +156,21 @@ features_notcar, hog_notcarimage = get_hog_features(notcar_gray, orient,
 # Plot the examples
 fig = plt.figure()
 
-plt.subplot(241)
+plt.subplot(221)
 plt.imshow(image, cmap='gray')
 plt.title('Example Car Image',fontsize=7)
-plt.subplot(242)
+plt.subplot(222)
 plt.imshow(hog_image, cmap='gray')
 plt.title('HOG Visualization',fontsize=7)
 
-plt.subplot(243)
+plt.subplot(223)
 plt.imshow(notcar_image, cmap='gray')
 plt.title('Example Not Car Image',fontsize=7)
-plt.subplot(244)
+plt.subplot(224)
 plt.imshow(hog_notcarimage, cmap='gray')
 plt.title('HOG Visualization',fontsize=7)
 plt.show()
 
-plt.subplot(245)
-plt.imshow(image, cmap='gray')
-plt.title('Example Car Image',fontsize=7)
-plt.subplot(242)
-plt.imshow(hog_image, cmap='gray')
-plt.title('HOG Visualization',fontsize=7)
 
 
 

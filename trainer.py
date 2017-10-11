@@ -59,6 +59,7 @@ hog_feat = True # HOG features on or off
 y_start_stop = [400, 656] # Min and max in y to search in slide_window()
 
 t=time.time()
+
 car_features = extract_features(cars, color_space=color_space, 
                         spatial_size=spatial_size, hist_bins=hist_bins, 
                         orient=orient, pix_per_cell=pix_per_cell, 

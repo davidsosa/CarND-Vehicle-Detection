@@ -76,8 +76,9 @@ scales_d = {
     1.5:[400,656],
     2.0:[400,656]
 }
- 
-  
+
+
+# class build to add and average the heatmaps for better thresholding 
 class Heatmaps():
     def _init_(self):
         self.maxlen = 0
@@ -91,10 +92,8 @@ class Heatmaps():
         if len(self.heatmaps) == self.maxlen:        
             return sum(self.heatmaps)/self.maxlen
         else:
-            return sum(self.heatmaps)/len(self.heatmaps)
-        
-        #return sum(self.heatmaps)
-  
+            return sum(self.heatmaps)/len(self.heatmaps)    
+
 def pipeline(image):
 
     heat_d = {}
@@ -108,7 +107,6 @@ def pipeline(image):
     for scale,y_coord in scales_d.items():  
         out_img_d[scale], bbox_list_d[scale] = find_cars(image, y_coord[0], y_coord[1], scale, svc, X_scaler, orient, pix_per_cell, cell_per_block, spatial_size, hist_bins)
 
-
     coord_li = []
     for key,box_li in bbox_list_d.items():
         for box in box_li:
@@ -116,30 +114,20 @@ def pipeline(image):
 
     heat_image = np.zeros_like(image[:,:,0]).astype(np.float)
 
-
-    heatmap1 = add_heat(heat_image, coord_li)
-    heatmap2 = heat.average_heat(heatmap1, maxlen) 
-    heatmap3 = apply_threshold(heatmap2,1.5)
-    
-    #heat_max = np.clip(heat, 0, 255)
-       
+    heatmap_add = add_heat(heat_image, coord_li)
+    heatmap_ave = heat.average_heat(heatmap_add, maxlen) 
+    heatmap_final = apply_threshold(heatmap_ave,1.5)   
+     
     labels = label(heatmap3)
-    draw_img4 = draw_labeled_bboxes(np.copy(image), labels)
-    heat_lbl = draw_labeled_bboxes(np.copy(heatmap3), labels)
-    #draw_img4 = show_image(draw_img4, heatmap3, (labels[1]) )
-
     draw_img = draw_labeled_bboxes(np.copy(image), labels)
 
-    return draw_img4
-    #return heatmap3
+    return draw_img
 
 from moviepy.editor import VideoFileClip
 from IPython.display import HTML
 from collections import deque
-
   
 vid_output = "testvideos/test1.mp4"
-#clip1 = VideoFileClip("challenge_video.mp4").subclip(0,10)
 def process_video(image):
     clip = pipeline(image)
     return clip
@@ -148,7 +136,6 @@ maxlen = 25     # number of frames to average
 heat = Heatmaps()
 heat.heatmaps = deque(maxlen = maxlen)
 
-#clip1 = VideoFileClip("project_video.mp4")
 clip1 = VideoFileClip("project_video.mp4").subclip(38,50)
 white_clip = clip1.fl_image(process_video)
 white_clip.write_videofile(vid_output, audio=False)
