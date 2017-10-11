@@ -78,7 +78,7 @@ for scale in scales:
     counter +=1
     counter1 +=1
   
-plt.show()
+#plt.show()
 plt.savefig("./myimages/hotwindows.jpg")
 
 
